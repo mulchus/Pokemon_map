@@ -10,3 +10,8 @@ class Pokemon(models.Model):
         if self.is_active:
             return self.title
         return f'{self.title} (inactive)'
+
+
+class PokemonEntity(models.Model):
+    lat = models.FloatField(null=True)
+    lon = models.FloatField(null=True)
