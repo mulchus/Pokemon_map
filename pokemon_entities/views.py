@@ -69,12 +69,17 @@ def show_pokemon(request, pokemon_id):
     pokemon_entityes = PokemonEntity.objects.filter(pokemon=pokemon)
     for pokemon_entity in pokemon_entityes:
         if pokemon_entity.appeared_at.timestamp() <= now <= pokemon_entity.disappeared_at.timestamp():
+            if pokemon.photo:
+                photo = f'{request.build_absolute_uri("/media/")}{pokemon.photo}'
+            else:
+                photo = f'{request.build_absolute_uri("/media/")}ghost.png'
             add_pokemon(
                 folium_map,
                 pokemon_entity.lat,
                 pokemon_entity.lon,
-                f'{request.build_absolute_uri("/media/")}{pokemon.photo}'
+                photo,
             )
+
             pokemons_description = {
                 'pokemon_id': pokemon.id,
                 'title_ru': pokemon.title,
