@@ -1,5 +1,4 @@
 import folium
-import json
 
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
@@ -29,31 +28,24 @@ def add_pokemon(folium_map, lat, lon, image_url=DEFAULT_IMAGE_URL):
 
 def show_all_pokemons(request):
     pokemons = Pokemon.objects.all()
-    pokemon_entityes = PokemonEntity.objects.all()
-
-    # with open('pokemon_entities/pokemons.json', encoding='utf-8') as database:
-    #     pokemons = json.load(database)['pokemons']
-
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     for pokemon in pokemons:
+        pokemon_entityes = PokemonEntity.objects.filter(pokemon=pokemon)
         for pokemon_entity in pokemon_entityes:
             add_pokemon(
                 folium_map,
                 pokemon_entity.lat,
                 pokemon_entity.lon,
-                pokemon.photo
+                f'{request.build_absolute_uri("/media/")}{pokemon.photo}'
             )
 
     pokemons_on_page = []
     for pokemon in pokemons:
-
         pokemons_on_page.append({
             'pokemon_id': pokemon.id,
             'img_url': f'{request.build_absolute_uri("/media/")}{pokemon.photo}',
             'title_ru': pokemon.title,
         })
-        print(f'{request.build_absolute_uri("/media/")}{pokemon.photo}')
-
     return render(request, 'mainpage.html', context={
         'map': folium_map._repr_html_(),
         'pokemons': pokemons_on_page,
@@ -61,10 +53,7 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    # with open('pokemon_entities/pokemons.json', encoding='utf-8') as database:
-    #     pokemons = json.load(database)['pokemons']
     pokemons = Pokemon.objects.all()
-    pokemon_entityes = PokemonEntity.objects.all()
 
     for pokemon in pokemons:
         if pokemon.id == int(pokemon_id):
@@ -74,11 +63,13 @@ def show_pokemon(request, pokemon_id):
         return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
+    pokemon_entityes = PokemonEntity.objects.filter(pokemon=pokemon)
     for pokemon_entity in pokemon_entityes:
         add_pokemon(
-            folium_map, pokemon_entity.lat,
+            folium_map,
+            pokemon_entity.lat,
             pokemon_entity.lon,
-            pokemon.photo
+            f'{request.build_absolute_uri("/media/")}{pokemon.photo}'
         )
 
     return render(request, 'pokemon.html', context={
