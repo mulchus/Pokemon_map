@@ -5,6 +5,7 @@ class Pokemon(models.Model):
     is_active = models.BooleanField(default=False)
     title = models.CharField(max_length=200)
     photo = models.ImageField(null=True)
+    description = models.TextField(blank=True)
 
     def __str__(self):
         if self.is_active:
