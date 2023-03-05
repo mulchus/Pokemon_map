@@ -9,7 +9,7 @@ class Pokemon(models.Model):
     title_en = models.CharField(max_length=200, blank=True)
     title_jp = models.CharField(max_length=200, blank=True)
     next_evolution = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
-    # previous_evolution = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
+    previous_evolution = models.ForeignKey('self', related_name='previous_ev', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         if self.is_active:
