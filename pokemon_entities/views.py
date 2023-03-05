@@ -57,8 +57,6 @@ def show_all_pokemons(request):
 
 def show_pokemon(request, pokemon_id):
     pokemon = Pokemon.objects.get(id=pokemon_id)
-    print(pokemon)
-    pokemons={}
     now = datetime.now().timestamp()
     # for pokemon in pokemons:
     #     if pokemon.id == int(pokemon_id):
@@ -77,7 +75,7 @@ def show_pokemon(request, pokemon_id):
                 pokemon_entity.lon,
                 f'{request.build_absolute_uri("/media/")}{pokemon.photo}'
             )
-            pokemons={
+            pokemons = {
                 'pokemon_id': pokemon.id,
                 'title_ru': pokemon.title,
                 'title_en': pokemon.title_en,
@@ -89,17 +87,20 @@ def show_pokemon(request, pokemon_id):
                     'lat': pokemon_entity.lat,
                     'lon': pokemon_entity.lon
                 },
-                # 'next_evolution': {
-                #     'title_ru': pokemon.next_evolution.title,
-                #     'pokemon_id': pokemon.next_evolution.pokemon_id,
-                #     'img_url': pokemon.next_evolution.img_url
-                # },
+            }
+            if pokemon.next_evolution:
+                pokemons.update({
+                    'next_evolution': {
+                        'title_ru': pokemon.next_evolution.title,
+                        'pokemon_id': pokemon.next_evolution.id,
+                        'img_url': f'{request.build_absolute_uri("/media/")}{pokemon.next_evolution.photo}'
+                    },
+                })
                 # 'previous_evolution': {
                 #     'title_ru': pokemon.previous_evolution.title,
                 #     'pokemon_id': pokemon.previous_evolution.pokemon_id,
                 #     'img_url': pokemon.previous_evolution.img_url
                 # }
-            }
 
     return render(request, 'pokemon.html', context={
         'map': folium_map._repr_html_(),
