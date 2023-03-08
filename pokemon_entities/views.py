@@ -31,7 +31,7 @@ def show_all_pokemons(request):
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     now = datetime.now().timestamp()
     for pokemon in pokemons:
-        pokemon_entityes = PokemonEntity.objects.filter(pokemon=pokemon)
+        pokemon_entityes = pokemon.pokemon_entity.all()
         for pokemon_entity in pokemon_entityes:
             if pokemon_entity.appeared_at.timestamp() <= now <= pokemon_entity.disappeared_at.timestamp():
                 add_pokemon(
@@ -58,7 +58,7 @@ def show_pokemon(request, pokemon_id):
     pokemon = Pokemon.objects.get(id=pokemon_id)
     now = datetime.now().timestamp()
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
-    pokemon_entityes = PokemonEntity.objects.filter(pokemon=pokemon)
+    pokemon_entityes = pokemon.pokemon_entity.all()
     for pokemon_entity in pokemon_entityes:
         if pokemon_entity.appeared_at.timestamp() <= now <= pokemon_entity.disappeared_at.timestamp():
             photo = f'{request.build_absolute_uri("/media/")}{pokemon.photo}'
@@ -82,8 +82,8 @@ def show_pokemon(request, pokemon_id):
                     'lon': pokemon_entity.lon
                 },
             }
-            if Pokemon.objects.filter(previous_evolution=pokemon.id):
-                next_pokemon = Pokemon.objects.filter(previous_evolution=pokemon.id)[0]
+            if pokemon.previous_pokemon.first():
+                next_pokemon = pokemon.previous_pokemon.first()
                 pokemons_description.update({
                     'next_evolution': {
                         'title_ru': next_pokemon.title,
