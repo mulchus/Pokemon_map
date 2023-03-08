@@ -82,12 +82,13 @@ def show_pokemon(request, pokemon_id):
                     'lon': pokemon_entity.lon
                 },
             }
-            if pokemon.next_evolution:
+            if Pokemon.objects.filter(previous_evolution=pokemon.id):
+                next_pokemon = Pokemon.objects.filter(previous_evolution=pokemon.id)[0]
                 pokemons_description.update({
                     'next_evolution': {
-                        'title_ru': pokemon.next_evolution.title,
-                        'pokemon_id': pokemon.next_evolution.id,
-                        'img_url': f'{request.build_absolute_uri("/media/")}{pokemon.next_evolution.photo}'
+                        'title_ru': next_pokemon.title,
+                        'pokemon_id': next_pokemon.id,
+                        'img_url': f'{request.build_absolute_uri("/media/")}{next_pokemon.photo}'
                     },
                 })
             if pokemon.previous_evolution:
