@@ -13,7 +13,7 @@
   <div class="container">
     <ul class="nav" style="background-color: #e3f2fd;">
       <li class="nav-item">
-        <a class="nav-link active" href="{% url "mainpage" %}">На главную</a>
+        <a class="nav-link active" href="{% url 'mainpage' %}">На главную</a>
       </li>
     </ul>
     <div class="d-flex mt-5 row">
@@ -22,7 +22,7 @@
         {% if pokemon.img_url %}
           <img src="{{pokemon.img_url}}" style="height:200px; width:200px">
         {% else %}
-          <img src="{% url "media" %}ghost.png" style="height:200px; width:200px">
+          <img src="{% url 'media' %}ghost.png" style="height:200px; width:200px">
         {% endif %}
       </div>
       <div class="m-2 ml-4 col-11 col-sm-8 col-lg-8 col-xl-8">
@@ -43,7 +43,7 @@
                       </div>
                     </a>
                   </div>
-                  <h6 class="d-flex justify-content-center m-2">Из кого эволюционировал</h6>
+                  <h6 class="d-flex justify-content-center m-2">Из кого эволюционирует</h6>
                 </div>
               {% endif %}
               {% if pokemon.next_evolution %}
