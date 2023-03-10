@@ -1,11 +1,20 @@
 import folium
+import os
+import requests
+
 
 from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from .models import Pokemon, PokemonEntity
 
 
 MOSCOW_CENTER = [55.751244, 37.618423]
+DEFAULT_IMAGE_URL = (
+    'https://vignette.wikia.nocookie.net/pokemon/images/6/6e/%21.png/revision'
+    '/latest/fixed-aspect-ratio-down/width/240/height/240?cb=20130525215832'
+    '&fill=transparent'
+)
 
 
 def add_pokemon(folium_map, lat, lon, image_url):
@@ -22,6 +31,12 @@ def add_pokemon(folium_map, lat, lon, image_url):
 
 
 def show_all_pokemons(request):
+    if not os.path.isfile(request.build_absolute_uri('/media/default_image.png')):
+        default_image = requests.get(DEFAULT_IMAGE_URL)
+        default_image.raise_for_status()
+        with open('media/default_image.png', 'wb') as file:
+            file.write(default_image.content)
+
     pokemons = Pokemon.objects.all()
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     now = timezone.now()
@@ -48,7 +63,7 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    pokemon = Pokemon.objects.get(id=pokemon_id)
+    pokemon = get_object_or_404(Pokemon, id=pokemon_id)
     now = timezone.now()
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     pokemon_entities = pokemon.entities.filter(appeared_at__lte=now, disappeared_at__gte=now)
@@ -63,7 +78,7 @@ def show_pokemon(request, pokemon_id):
     }
 
     if not pokemon_entities.count():
-        pokemons_description['title_ru'] += ' (такой покемон не найден)'
+        pokemons_description['title_ru'] = f"{pokemons_description['title_ru']} (такой покемон не найден)"
 
     if pokemon.next_evolution.first():
         next_evolution = pokemon.next_evolution.first()
