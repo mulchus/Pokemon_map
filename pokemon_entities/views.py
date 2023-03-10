@@ -65,13 +65,13 @@ def show_pokemon(request, pokemon_id):
     if not pokemon_entities.count():
         pokemons_description['title_ru'] += ' (такой покемон не найден)'
 
-    if pokemon.previous_pokemon.first():
-        next_pokemon = pokemon.previous_pokemon.first()
+    if pokemon.next_evolution.first():
+        next_evolution = pokemon.next_evolution.first()
         pokemons_description.update({
             'next_evolution': {
-                'title_ru': next_pokemon.title,
-                'pokemon_id': next_pokemon.id,
-                'img_url': request.build_absolute_uri(f'/media/{next_pokemon.photo}')
+                'title_ru': next_evolution.title,
+                'pokemon_id': next_evolution.id,
+                'img_url': request.build_absolute_uri(f'/media/{next_evolution.photo}')
             },
         })
 
