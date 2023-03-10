@@ -46,14 +46,14 @@ def show_all_pokemons(request):
             folium_map,
             pokemon_entity.lat,
             pokemon_entity.lon,
-            request.build_absolute_uri(f'/media/{pokemon_entity.pokemon.photo}')
+            request.build_absolute_uri(pokemon_entity.pokemon.photo.url)
         )
 
     pokemons_on_page = []
     for pokemon in pokemons:
         pokemons_on_page.append({
             'pokemon_id': pokemon.id,
-            'img_url': request.build_absolute_uri(f'/media/{pokemon.photo}'),
+            'img_url': request.build_absolute_uri(pokemon.photo.url),
             'title_ru': pokemon.title,
         })
     return render(request, 'mainpage.html', context={
@@ -74,7 +74,7 @@ def show_pokemon(request, pokemon_id):
         'title_en': pokemon.title_en,
         'title_jp': pokemon.title_jp,
         'description': pokemon.description,
-        'img_url': request.build_absolute_uri(f'/media/{pokemon.photo}')
+        'img_url': request.build_absolute_uri(pokemon.photo.url)
     }
 
     if not pokemon_entities.count():
@@ -86,7 +86,7 @@ def show_pokemon(request, pokemon_id):
             'next_evolution': {
                 'title_ru': next_evolution.title,
                 'pokemon_id': next_evolution.id,
-                'img_url': request.build_absolute_uri(f'/media/{next_evolution.photo}')
+                'img_url': request.build_absolute_uri(next_evolution.photo.url)
             },
         })
 
@@ -95,17 +95,16 @@ def show_pokemon(request, pokemon_id):
             'previous_evolution': {
                 'title_ru': pokemon.previous_evolution.title,
                 'pokemon_id': pokemon.previous_evolution.id,
-                'img_url': request.build_absolute_uri(f'/media/{pokemon.previous_evolution.photo}')
+                'img_url': request.build_absolute_uri(pokemon.previous_evolution.photo.url)
             },
         })
 
     for pokemon_entity in pokemon_entities:
-        photo = request.build_absolute_uri(f'/media/{pokemon.photo}')
         add_pokemon(
             folium_map,
             pokemon_entity.lat,
             pokemon_entity.lon,
-            photo,
+            request.build_absolute_uri(pokemon.photo.url),
         )
         pokemons_description.update({
                 'entities': {
