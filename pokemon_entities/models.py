@@ -9,7 +9,7 @@ class Pokemon(models.Model):
     description = models.TextField(verbose_name='описание', blank=True)
     previous_evolution = models.ForeignKey('self', verbose_name='из кого эволюционировал',
                                            related_name='next_evolution',
-                                           on_delete=models.CASCADE, null=True, blank=True)
+                                           on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -17,7 +17,7 @@ class Pokemon(models.Model):
 
 class PokemonEntity(models.Model):
     pokemon = models.ForeignKey(Pokemon, verbose_name='название покемона',
-                                related_name='pokemon_entity', on_delete=models.CASCADE)
+                                related_name='pokemon_entity', on_delete=models.SET_NULL, null=True)
     lat = models.FloatField(verbose_name='широта', null=True)
     lon = models.FloatField(verbose_name='долгота', null=True)
     appeared_at = models.DateTimeField(verbose_name='появление', null=True)
