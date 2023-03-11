@@ -1,6 +1,4 @@
 import folium
-import os
-import requests
 
 
 from django.shortcuts import render
@@ -82,7 +80,7 @@ def show_pokemon(request, pokemon_id):
                 'title_ru': next_evolution.title,
                 'pokemon_id': next_evolution.id,
                 'img_url': request.build_absolute_uri(next_evolution.photo.url) if next_evolution.photo
-                                                      else DEFAULT_IMAGE_URL
+                else DEFAULT_IMAGE_URL
             },
         })
 
